@@ -30,25 +30,31 @@ pageEncoding="UTF-8"%>
 
 
       <div class="container">
-        <!-- <h1>${user.userName} Books</h1> -->
           <table class="table table-bordered">
             <thead class="table-info">
               <tr>
-                <!-- <th scope="col">Id</th> -->
                 <th scope="col">Id</th>
                 <th scope="col">Title</th>
                   <th scope="col">Author</th>
                   <th scope="col">Posted by</th>
+                  <th scope="col">Delete</th>
+                  <th scope="col">Edit</th>
               </tr>
             </thead>
             <tbody>
-              <c:forEach var="book" items="${user.book}">
+              <c:forEach var="book" items="${books}">
                 <tr class="table-secondary">
-                <!-- <td scope="row">${book.title}</td> -->
                 <td scope="row">${book.id}</td>
-                <td scope="row">${book.title}</td>
+                <td scope="row"><a href="/books/${book.id}">${book.title}</a></td>
                 <td scope="row">${book.author}</td>
-                <td scope="row">${user.userName}</td>
+                <td scope="row">${book.user.userName}</td>
+                <td>
+                <form action="/books/delete/${book.id}" method="post">
+                  <input type="hidden" name="_method" value="delete">
+                  <input type="submit" value="Delete">    
+                </input>  
+              </td>
+              <td><a href="/books/edit/${book.id}">Edit</a></td>
               </tr>
               </c:forEach>
             </tbody>

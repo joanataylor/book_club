@@ -26,6 +26,7 @@ pageEncoding="UTF-8"%>
     <a href="/logout">Logout</a>
     <a href="/books">Back to shelfs</a>
     <form:form action="/books/create" method="post" modelAttribute="book">
+      <form:hidden path="user" value="${user.id}"/>
       <p>
         <form:label path="title">Title</form:label>
         <form:errors path="title" />
@@ -39,7 +40,7 @@ pageEncoding="UTF-8"%>
       <p>
         <form:label path="thoughts">My thoughts</form:label>
         <form:errors path="thoughts" />
-        <form:textarea path="thoughts" class="form-control" />
+        <form:input path="thoughts" class="form-control" />
       </p>
         <input type="submit" value="submit" class="btn btn-secondary"/>
     </form:form>

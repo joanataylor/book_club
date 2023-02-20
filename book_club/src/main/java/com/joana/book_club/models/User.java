@@ -1,5 +1,6 @@
 package com.joana.book_club.models;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.persistence.CascadeType;
@@ -41,17 +42,17 @@ public class User {
     private String confirm;
   
     @OneToMany(mappedBy="user", cascade=CascadeType.ALL, fetch=FetchType.LAZY)
-    private List<Book> book;
+    private List<Book> books;
 
     public User() {}
 
 
-  public User(String userName, String email, String password, String confirm, List<Book> book) {
+  public User(String userName, String email, String password, String confirm) {
     this.userName = userName;
     this.email = email;
     this.password = password;
     this.confirm = confirm;
-    this.book = book;
+    this.books = new ArrayList<Book>();
   }
 
     
@@ -98,12 +99,12 @@ public class User {
     this.confirm = confirm;
   }
 
-  public List<Book> getBook() {
-    return this.book;
+  public List<Book> getBooks() {
+    return this.books;
   }
 
-  public void setBook(List<Book> book) {
-    this.book = book;
+  public void setBooks(List<Book> books) {
+    this.books = books;
   }
 
   

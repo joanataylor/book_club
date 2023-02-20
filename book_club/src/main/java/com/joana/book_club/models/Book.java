@@ -13,6 +13,8 @@ import javax.persistence.ManyToOne;
 import javax.persistence.PrePersist;
 import javax.persistence.PreUpdate;
 import javax.persistence.Table;
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Size;
 
 import org.springframework.format.annotation.DateTimeFormat;
 
@@ -22,10 +24,15 @@ public class Book {
 
   @Id
   @GeneratedValue(strategy = GenerationType.IDENTITY)
-
   private Long id;
+  @NotNull
+  @Size(min=3, max=30, message=" must be between 3 and 30 characters")
   private String title;
+  @NotNull
+  @Size(min=3, max=30, message=" must be between 3 and 30 characters")
   private String author;
+  @NotNull
+  @Size(min=3, max=30, message=" must be between 3 and 30 characters")
   private String thoughts;
 
   @Column(updatable=false)
@@ -42,13 +49,10 @@ public class Book {
     
   }
 
-  public Book(Long id, String title, String author, String thoughts, Date createdAt, Date updatedAt, User user) {
-    this.id = id;
+  public Book(String title, String author, String thoughts, User user) {
     this.title = title;
     this.author = author;
     this.thoughts = thoughts;
-    this.createdAt = createdAt;
-    this.updatedAt = updatedAt;
     this.user = user;
   }
   

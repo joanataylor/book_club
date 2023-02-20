@@ -82,7 +82,4 @@ public class UserService {
         }
     }
 
-    // public List<User> allUsers() {
-    //     return userRepo.findByEmail();
-    // }
 }

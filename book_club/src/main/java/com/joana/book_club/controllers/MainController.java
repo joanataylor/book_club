@@ -9,13 +9,14 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 
-import com.fasterxml.jackson.annotation.JsonTypeInfo.Id;
 import com.joana.book_club.models.Book;
 import com.joana.book_club.models.LoginUser;
 import com.joana.book_club.models.User;
@@ -46,11 +47,12 @@ public class MainController {
       return "redirect:/";
     }
     Long id = (Long) session.getAttribute("userId");
+
+    List<Book> books = bookService.allBooks();
+    model.addAttribute("books", books);
+
     User user = userServ.getById(id);
-    List<Book> book = bookService.allBook();
     model.addAttribute("user", user);
-    model.addAttribute("book", book);
-    model.addAttribute("allBooks", bookService.allBook());
     return "dashboard.jsp";
   }
 
@@ -103,31 +105,66 @@ public class MainController {
 
   // *************************************************************** */
   @RequestMapping("/books/new")
-  public String newDojo(@ModelAttribute("book") Book book, Model model) {
-    // List<User> users = userServ.allUsers();
-    // model.addAttribute("users", users);
-    return "books/createBook.jsp";
+  public String newBook(@ModelAttribute("book") Book book, HttpSession session, Model model) {
+  //   if(result.hasErrors()) {	
+  //   return "books/createBook.jsp";
+  // }
+  if (session.getAttribute("userId") == null) {
+    return "redirect:/";
   }
+  User user = userServ.getById((Long) session.getAttribute("userId"));
+  model.addAttribute("user", user);
+  return "books/createBook.jsp";
+}
 
   @PostMapping("/books/create")
-  public String createeeebook(@Valid @ModelAttribute("newBook") Book book, BindingResult result, Model model) {
+  public String createBook(@Valid @ModelAttribute("book") Book book, BindingResult result, Model model) {
     if (result.hasErrors()) {
-      List<Book> books = bookService.allBook();
-      model.addAttribute("book", books);
       return "books/createBook.jsp";
     } else {
       bookService.createBook(book);
-      // System.out.println("***********" + ninja.getDojo().getId());
+      List<Book> books = bookService.allBooks();
+      model.addAttribute("books", books);
       return "redirect:/books";
     }
   }
 
-  // @GetMapping("/books/{user_id}")
-  // public String showBook(@PathVariable Long user_id, Model model){
-  //   // User userPerson = userServ.getById(); 
-  //   // model.addAttribute("user", userPerson);
-  //   return "redirect:/books";
-  // }
+  @DeleteMapping("/books/delete/{id}")
+  public String delete(@PathVariable("id")Long id){
+    Book book = bookService.findBook(id);
+      bookService.deleteBook(book);
+      return "redirect:/books";
+  }
+  
+  @GetMapping("/books/{id}")
+  public String display(@PathVariable("id")Long id, Model model){
+    Book book = bookService.findBook(id);
+    model.addAttribute("book", book);
+    return "books/displayBook.jsp";
+  }
 
+
+
+
+  
+  @RequestMapping("/books/edit/{id}")
+  public String showOne(@PathVariable("id")Long id, Model model){
+    Book books = bookService.findBook(id);
+    model.addAttribute("books", books);
+    return "books/editBook.jsp";
+  }
+
+
+  @PutMapping("/edit/{id}")
+  public String update(@PathVariable("id") Long id, @Valid @ModelAttribute("books") Book book,  BindingResult result, Model model) {
+    if(result.hasErrors()){
+      model.addAttribute("book", book);
+      return "books/editBook.jsp";
+
+    }else{
+          bookService.updateBook(book);
+          return "redirect:/books";
+        }
+  }
 
 }
