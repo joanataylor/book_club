@@ -23,6 +23,8 @@ import com.joana.book_club.models.User;
 import com.joana.book_club.services.BookService;
 import com.joana.book_club.services.UserService;
 
+
+//Controller speaks to the service and repository
 @Controller
 public class MainController {
   // Add once service is implemented:
@@ -41,6 +43,56 @@ public class MainController {
     return "index.jsp";
   }
 
+  //handles register form
+  @PostMapping("/register")
+
+  //modelAttribute variable "newUser" is used in the form it corresponds to
+  public String register(@Valid @ModelAttribute("newUser") User newUser,
+  BindingResult result, Model model, HttpSession session) {
+    
+    // TO-DO Later -- call a register method in the service
+    // to do some extra validations and create a new user!
+    User user = userServ.register(newUser, result);
+    
+    if (result.hasErrors()) {
+      // Be sure to send in the empty LoginUser before
+      // re-rendering the page.
+      model.addAttribute("newLogin", new LoginUser());
+      return "index.jsp";
+    }
+    
+    // No errors!
+    // TO-DO Later: Store their ID from the DB in session,
+    // in other words, log them in.
+    session.setAttribute("userId", user.getId());
+    return "redirect:/books";
+  }
+  
+  @PostMapping("/login")
+  public String login(@Valid @ModelAttribute("newLogin") LoginUser newLogin,
+  BindingResult result, Model model, HttpSession session) {
+    
+    // Add once service is implemented:
+    User user = userServ.login(newLogin, result);
+    
+    if (result.hasErrors()) {
+      model.addAttribute("newUser", new User());
+      return "index.jsp";
+    }
+    
+    // No errors!
+    // TO-DO Later: Store their ID from the DB in session,
+    // in other words, log them in.
+    session.setAttribute("userId", user.getId());
+    return "redirect:/books";
+  }
+  
+  @RequestMapping("/logout")
+  public String logout(HttpSession session) {
+    session.invalidate();
+    return "redirect:/";
+  }
+
   @GetMapping("/books")
   public String dashboard(Model model, HttpSession session) {
     if (session.getAttribute("userId") == null) {
@@ -54,53 +106,6 @@ public class MainController {
     User user = userServ.getById(id);
     model.addAttribute("user", user);
     return "dashboard.jsp";
-  }
-
-  @PostMapping("/register")
-  public String register(@Valid @ModelAttribute("newUser") User newUser,
-      BindingResult result, Model model, HttpSession session) {
-
-    // TO-DO Later -- call a register method in the service
-    // to do some extra validations and create a new user!
-    User user = userServ.register(newUser, result);
-
-    if (result.hasErrors()) {
-      // Be sure to send in the empty LoginUser before
-      // re-rendering the page.
-      model.addAttribute("newLogin", new LoginUser());
-      return "index.jsp";
-    }
-
-    // No errors!
-    // TO-DO Later: Store their ID from the DB in session,
-    // in other words, log them in.
-    session.setAttribute("userId", user.getId());
-    return "redirect:/books";
-  }
-
-  @PostMapping("/login")
-  public String login(@Valid @ModelAttribute("newLogin") LoginUser newLogin,
-      BindingResult result, Model model, HttpSession session) {
-
-    // Add once service is implemented:
-    User user = userServ.login(newLogin, result);
-
-    if (result.hasErrors()) {
-      model.addAttribute("newUser", new User());
-      return "index.jsp";
-    }
-
-    // No errors!
-    // TO-DO Later: Store their ID from the DB in session,
-    // in other words, log them in.
-    session.setAttribute("userId", user.getId());
-    return "redirect:/books";
-  }
-
-  @RequestMapping("/logout")
-  public String logout(HttpSession session) {
-    session.invalidate();
-    return "redirect:/";
   }
 
   // *************************************************************** */
