@@ -48,6 +48,7 @@ pageEncoding="UTF-8"%>
                 <td scope="row"><a href="/books/${book.id}">${book.title}</a></td>
                 <td scope="row">${book.author}</td>
                 <td scope="row">${book.user.userName}</td>
+                <c:if test="${book.getUser().getId() == user.getId()}">
                 <td>
                 <form action="/books/delete/${book.id}" method="post">
                   <input type="hidden" name="_method" value="delete">
@@ -55,6 +56,7 @@ pageEncoding="UTF-8"%>
                 </input>  
               </td>
               <td><a href="/books/edit/${book.id}">Edit</a></td>
+            </c:if>
               </tr>
               </c:forEach>
             </tbody>

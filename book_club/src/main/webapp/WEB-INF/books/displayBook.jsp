@@ -27,6 +27,15 @@ pageEncoding="UTF-8"%>
     <a href="/books">Back to shelfs</a>
     <p>Author: ${book.author}</p>
     <p>Here are the thoughts: ${book.thoughts}</p>
+    <c:if test="${userId == book.user.id}">
+      <div>
+      <form action="/books/delete/${book.id}" method="post">
+        <input type="hidden" name="_method" value="delete">
+        <input type="submit" value="Delete">    
+      </input>  
+      <a href="/books/edit/${book.id}">Edit</a>
+    </div>
+    </c:if>
     </div>
   </body>
 </html>
